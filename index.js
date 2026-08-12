@@ -1,14 +1,22 @@
+const swaggerUi = require("swagger-ui-express");
+const YAML = require("yamljs");
 const express = require("express");
+
 const authMiddleware = require("./authMiddleware");
 require("dotenv").config();
 
 const supabase = require("./supabase");
 
 const app = express();
-
+const swaggerDocument = YAML.load("./swagger.yaml");
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
+app.use(
+    "/docs",
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerDocument)
+);
 // Signup
 app.post("/auth/signup", async (req, res) => {
     const { email, password } = req.body;
